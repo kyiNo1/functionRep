@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href=""/>
+    <script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+    <title>target</title>
+    <style>
+        html,body{height:auto}
+        html,body,div,ul,li{
+            padding: 0;
+            margin: 0;;
+        }
+        .main {
+            width: 1200px;
+            margin: auto;
+            background: gray;
+        }
+        .left {
+            float: left;
+            width: 300px;
+            min-height: 400px;
+            z-index: -1;
+            padding: 20px;
+        }
+        .right {
+            min-height:500px;
+            box-sizing: border-box;
+            background: black;
+            overflow-y: scroll;
+            overflow-x: hidden;
+
+        }
+        .s-panel {
+            width: 100%;
+            height: 100%;
+        }
+        .s-item {
+            position: fixed;
+            top:0;
+            width: 300px;
+            height: 400px;
+            background: gray;
+            margin-top: 100px;;
+        }
+        .s-item li{
+            display: block;
+            width: 100%;
+            height: 30px;
+            text-align: center;
+            background: rosybrown;
+            margin-top: 2px;
+            cursor: pointer;
+        }
+        .s-item li.active {
+            background: red;
+            color: #ffffff;
+        }
+        .font {
+            font-size: 60px;
+            text-align: center;
+            color: #ffffff;
+            font-weight: 600;
+        }
+    </style>
+
+
+</head>
+
+<body>
+          <div class="main">
+              <div class="left">
+                  <ul class="s-item title-list">
+                      <li data-target = 'aa'  class="active" >a</li>
+                      <li data-target = 'bb'>b</li>
+                      <li data-target = 'cc'>c</li>
+                      <li data-target = 'dd'>多余的按不了</li>
+                      <li data-target = 'ee'>多余的按不了</li>
+                      <li data-target = 'ff'>多余的按不了</li>
+                  </ul>
+              </div>
+              <div class="right">
+                  <div class="s-panel box font">
+                      <div id="aa" style="width: 100%;height:300px;background: red">1</div>
+                      <div id="bb" style="width: 100%;height: 400px;background: wheat">2</div>
+                      <div id="cc" style="width: 100%;height: 800px;background: blue">3</div>
+                  </div>
+              </div>
+          </div>
+
+</body>
+<script>
+
+    ;(function(){
+        $('.s-item').on('click','li',function(){
+            var target = "#" + $(this).attr('data-target');
+            if($(target).attr('id')){
+                $(window).unbind('scroll',addActive);
+                $(this).siblings('li').removeClass('active');
+                $(this).addClass('active');
+                var height = $(target).offset().top;
+                $("html,body").animate({"scrollTop":height},400,function(){
+                    $(window).on('scroll',addActive)
+                });
+            }
+        })
+        var addActive = function(){
+            $.each($('.s-panel div'),function(index){
+                var h = $(this).offset().top,
+                        nh =   $(this).offset().top + $(this).height(),
+                        sh = $(window).scrollTop();
+                if( h <= sh && sh< nh ){
+                    var target = $(this).attr('id');
+                    var tg = 'li[data-target="'+target +'"]'
+                    $(tg).siblings('li').removeClass('active');
+                    $(tg).addClass('active');
+                }
+            })
+        }
+        $(window).on('scroll',addActive);
+    })();
+//    html 结构
+//            <div class="s-item">
+//            <li data-target="targetId"></li>
+//            </div>
+//            <div class="s-panel">
+//            <div id="targetId"></div>
+//            </div>
+</script>
+</html>
